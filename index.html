@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>davidlazarek.github.io</title>
+    
+    <!-- Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. Animations --- */
+        @keyframes spin {
+            0% { transform: translateY(-5px); filter: blur(1px); opacity: 0.8; }
+            25% { transform: translateY(5px); }
+            50% { transform: translateY(-8px); filter: blur(2px); }
+            75% { transform: translateY(8px); }
+            100% { transform: translateY(0px); filter: blur(1px); opacity: 0.8; }
+        }
+
+        @keyframes land {
+            0% { transform: translateY(-20px); opacity: 0.5; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px #ffc107, 0 0 20px #ffc107; }
+            50% { box-shadow: 0 0 20px #ffc107, 0 0 30px #ffc107; }
+            100% { box-shadow: 0 0 10px #ffc107, 0 0 20px #ffc107; }
+        }
+
+        /* --- 2. Main Setup --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at center, #2a2a35 0%, #101014 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #fff;
+        }
+
+        /* --- 3. Slot Machine Casing --- */
+        .slot-machine {
+            background: linear-gradient(180deg, #2c2c38 0%, #1a1a24 100%);
+            border-radius: 20px;
+            border: 4px solid #444;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.1);
+            width: 90vw;
+            max-width: 450px;
+            padding: 25px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 2.2rem;
+            margin: 0;
+            background: linear-gradient(to bottom, #ffe259, #ffa751);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 4px 15px rgba(255, 167, 81, 0.4);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: #888;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* --- 4. Reels Window --- */
+        .reels-window {
+            background: #0a0a0d;
+            border-radius: 15px;
+            padding: 20px;
+            border: 3px solid #111;
+            box-shadow: inset 0 10px 20px rgba(0,0,0,0.8), 0 2px 0 rgba(255,255,255,0.1);
+            margin-bottom: 25px;
+        }
+
+        .reels {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .reel {
+            width: 30%;
+            aspect-ratio: 3/4;
+            background: linear-gradient(180deg, #e6e6e6 0%, #ffffff 50%, #e6e6e6 100%);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4rem;
+            color: #000;
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.5);
+            border: 1px solid #999;
+        }
+
+        .reel.spinning { animation: spin 0.1s linear infinite; }
+        .reel.landed { animation: land 0.3s ease-out; }
+
+        /* --- 5. Controls --- */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-panel {
+            background: #15151c;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 10px 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            color: #888;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+
+        .balance-container {
+            display: flex;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: #ffc107;
+        }
+
+        .action-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #spin-button {
+            background: linear-gradient(180deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            padding: 15px 0;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #c2211f, 0 10px 20px rgba(255, 75, 43, 0.4);
+            transition: all 0.1s;
+            flex-grow: 1;
+        }
+
+        #spin-button:active:not(:disabled) {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 #c2211f, 0 4px 10px rgba(255, 75, 43, 0.4);
+        }
+
+        #spin-button:disabled {
+            background: #555;
+            box-shadow: 0 6px 0 #333;
+            cursor: not-allowed;
+            color: #888;
+        }
+
+        .cost-display {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 8px;
+        }
+
+        /* --- 6. Messages and Rules --- */
+        .message-box {
+            background: #15151c;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #message {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #aaa;
+        }
+
+        #message.win { color: #4CAF50; text-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
+        #message.lose { color: #ff4b2b; }
+
+        .rules {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .rules h3 {
+            margin: 0 0 15px 0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: #888;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .payout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+
+        .payout-item {
+            display: flex;
+            justify-content: space-between;
+            background: #1a1a24;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #2a2a35;
+        }
+
+        .prize {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        /* --- 7. About Me Footer --- */
+        .about-me {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #666;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="casino-background">
+        <div class="slot-machine">
+            <div class="header">
+                <h1>DAVID'S SLOTS</h1>
+                <div class="subtitle">davidlazarek.github.io</div>
+            </div>
+
+            <!-- The Reels -->
+            <div class="reels-window">
+                <div class="reels">
+                    <div class="reel" id="reel1">🍌</div>
+                    <div class="reel" id="reel2">🍌</div>
+                    <div class="reel" id="reel3">🍌</div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="controls">
+                <div class="info-panel">
+                    <div class="info-label">BALANCE</div>
+                    <div class="balance-container">
+                        <span id="banana-count">100</span>
+                        <span class="currency">🍌</span>
+                    </div>
+                </div>
+
+                <div class="action-panel">
+                    <button id="spin-button">SPIN</button>
+                    <div class="cost-display">Cost: 5🍌 | Interest: 1🍌</div>
+                </div>
+            </div>
+            
+            <!-- Message Area -->
+            <div class="message-box">
+                <p id="message">Welcome! Click "Spin" to play.</p>
+            </div>
+
+            <!-- Rules / Payouts -->
+            <div class="rules">
+                <h3>PAYTABLE</h3>
+                <div class="payout-grid">
+                    <div class="payout-item"><span>🍌 🍌 🍌</span> <span class="prize">+100</span></div>
+                    <div class="payout-item"><span>🍒 🍒 🍒</span> <span class="prize">+25</span></div>
+                    <div class="payout-item"><span>🍋 🍋 🍋</span> <span class="prize">+25</span></div>
+                    <div class="payout-item"><span>🔔 🔔 🔔</span> <span class="prize">+25</span></div>
+                    <div class="payout-item"><span>⭐ ⭐ ⭐</span> <span class="prize">+25</span></div>
+                    <div class="payout-item"><span>Any Two 🍌</span> <span class="prize">+10</span></div>
+                </div>
+            </div>
+
+            <!-- About Me Footer -->
+            <div class="about-me">
+                I like slots :)
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // --- 1. Define Game Elements ---
+            const reelElements = [
+                document.getElementById("reel1"),
+                document.getElementById("reel2"),
+                document.getElementById("reel3")
+            ];
+            const spinButton = document.getElementById("spin-button");
+            const bananaCountDisplay = document.getElementById("banana-count");
+            const messageDisplay = document.getElementById("message");
+
+            // --- 2. Define Game State and Constants ---
+            const symbols = ['🍌', '🍒', '🍋', '🔔', '⭐'];
+            const spinCost = 5;
+            let currentBananas = 100;
+
+            const INTEREST_PER_SPIN = 1;
+            const DEBT_LIMIT = -50; 
+
+            const SPIN_DURATION = 1000;
+            const STAGGER_DELAY = 500;
+
+            // --- 3. Core Functions ---
+            function getRandomSymbol() {
+                const randomIndex = Math.floor(Math.random() * symbols.length);
+                return symbols[randomIndex];
+            }
+
+            function spin() {
+                // Check if hit the absolute debt limit
+                if (currentBananas <= DEBT_LIMIT) {
+                    messageDisplay.textContent = "Debt limit reached! Win to pay it back.";
+                    messageDisplay.className = "lose";
+                    return;
+                }
+
+                // Apply interest if in debt
+                let spinInterest = 0;
+                if (currentBananas < 0) {
+                    spinInterest = INTEREST_PER_SPIN;
+                    currentBananas -= spinInterest;
+                }
+
+                // Deduct normal cost
+                currentBananas -= spinCost;
+                updateDisplay(); 
+                
+                // Set UI state for spinning
+                spinButton.disabled = true;
+                if (spinInterest > 0) {
+                    messageDisplay.textContent = `Spinning... (Interest paid: ${spinInterest}🍌)`;
+                } else {
+                    messageDisplay.textContent = "Spinning...";
+                }
+                messageDisplay.className = "";
+
+                // Get final results before animation
+                const results = [
+                    getRandomSymbol(),
+                    getRandomSymbol(),
+                    getRandomSymbol()
+                ];
+
+                // Start animation with David's Star 
+                reelElements.forEach(reel => {
+                    reel.textContent = '✡️'; 
+                    reel.classList.add('spinning');
+                    reel.classList.remove('landed');
+                });
+
+                // Stagger landings
+                reelElements.forEach((reel, index) => {
+                    const landTime = SPIN_DURATION + (index * STAGGER_DELAY);
+                    
+                    setTimeout(() => {
+                        reel.classList.remove('spinning');
+                        reel.textContent = results[index];
+                        reel.classList.add('landed');
+                    }, landTime);
+                });
+
+                // Check wins after last reel
+                const totalSpinTime = SPIN_DURATION + (STAGGER_DELAY * (reelElements.length - 1));
+                
+                setTimeout(() => {
+                    checkWin(results[0], results[1], results[2]); 
+                    updateDisplay(); 
+                    spinButton.disabled = false;
+                }, totalSpinTime + 100);
+            }
+
+            function checkWin(r1, r2, r3) {
+                let payout = 0;
+                let winMessage = "Try again!";
+                messageDisplay.className = "lose";
+
+                if (r1 === r2 && r2 === r3) {
+                    if (r1 === '🍌') {
+                        payout = 100;
+                        winMessage = "🍌 JACKPOT! 🍌 +100 Bananas!";
+                    } else {
+                        payout = 25;
+                        winMessage = `Three ${r1}s! +25 Bananas!`;
+                    }
+                }
+                else if ((r1 === '🍌' && r2 === '🍌') || (r1 === '🍌' && r3 === '🍌') || (r2 === '🍌' && r3 === '🍌')) {
+                    payout = 10;
+                    winMessage = "Two Bananas! +10 Bananas!";
+                }
+
+                currentBananas += payout; 
+                messageDisplay.textContent = winMessage;
+                if (payout > 0) {
+                    messageDisplay.className = "win";
+                }
+            }
+
+            function updateDisplay() {
+                bananaCountDisplay.textContent = currentBananas;
+                if (currentBananas < 0) {
+                    bananaCountDisplay.style.color = "#ff4b2b"; // Red debt color
+                } else {
+                    bananaCountDisplay.style.color = "#ffc107"; // Yellow normal color
+                }
+            }
+
+            // --- 4. Event Listeners ---
+            spinButton.addEventListener("click", spin);
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>
