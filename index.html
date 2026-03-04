@@ -31,10 +31,10 @@
             100% { box-shadow: 0 0 10px #ffc107, 0 0 20px #ffc107; }
         }
 
-        /* --- 2. Main Setup --- */
+        /* --- 2. Hlavni nastaveni --- */
         body {
             font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at center, #2a2a35 0%, #101014 100%);
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url('https://cdn.pixabay.com/photo/2016/06/09/20/38/minions-1446594_1280.jpg') center/cover fixed;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -260,11 +260,11 @@
     <div class="casino-background">
         <div class="slot-machine">
             <div class="header">
-                <h1>DAVID'S SLOTS</h1>
+                <h1>DAVIDOVY AUTOMATY</h1>
                 <div class="subtitle">davidlazarek.github.io</div>
             </div>
 
-            <!-- The Reels -->
+            <!-- Valce -->
             <div class="reels-window">
                 <div class="reels">
                     <div class="reel" id="reel1">🍌</div>
@@ -273,10 +273,10 @@
                 </div>
             </div>
 
-            <!-- Control Panel -->
+            <!-- Ovladaci panel -->
             <div class="controls">
                 <div class="info-panel">
-                    <div class="info-label">BALANCE</div>
+                    <div class="info-label">ZŮSTATEK</div>
                     <div class="balance-container">
                         <span id="banana-count">100</span>
                         <span class="currency">🍌</span>
@@ -284,39 +284,39 @@
                 </div>
 
                 <div class="action-panel">
-                    <button id="spin-button">SPIN</button>
-                    <div class="cost-display">Cost: 5🍌 | Interest: 1🍌</div>
+                    <button id="spin-button">ZATOČIT</button>
+                    <div class="cost-display">Cena: 5🍌 | Úrok: 1🍌</div>
                 </div>
             </div>
             
-            <!-- Message Area -->
+            <!-- Oblast pro zpravy -->
             <div class="message-box">
-                <p id="message">Welcome! Click "Spin" to play.</p>
+                <p id="message">Vítej! Klikni na "Zatočit" pro hru.</p>
             </div>
 
-            <!-- Rules / Payouts -->
+            <!-- Pravidla / Vyhry -->
             <div class="rules">
-                <h3>PAYTABLE</h3>
+                <h3>VÝHRY</h3>
                 <div class="payout-grid">
                     <div class="payout-item"><span>🍌 🍌 🍌</span> <span class="prize">+100</span></div>
                     <div class="payout-item"><span>🍒 🍒 🍒</span> <span class="prize">+25</span></div>
                     <div class="payout-item"><span>🍋 🍋 🍋</span> <span class="prize">+25</span></div>
                     <div class="payout-item"><span>🔔 🔔 🔔</span> <span class="prize">+25</span></div>
                     <div class="payout-item"><span>⭐ ⭐ ⭐</span> <span class="prize">+25</span></div>
-                    <div class="payout-item"><span>Any Two 🍌</span> <span class="prize">+10</span></div>
+                    <div class="payout-item"><span>Jakékoliv dva 🍌</span> <span class="prize">+10</span></div>
                 </div>
             </div>
 
-            <!-- About Me Footer -->
+            <!-- O mne paticka -->
             <div class="about-me">
-                I like slots :)
+                Mám rád automaty :)
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // --- 1. Define Game Elements ---
+            // --- 1. Definice hernich prvku ---
             const reelElements = [
                 document.getElementById("reel1"),
                 document.getElementById("reel2"),
@@ -337,41 +337,41 @@
             const SPIN_DURATION = 1000;
             const STAGGER_DELAY = 500;
 
-            // --- 3. Core Functions ---
+            // --- 3. Hlavni funkce ---
             function getRandomSymbol() {
                 const randomIndex = Math.floor(Math.random() * symbols.length);
                 return symbols[randomIndex];
             }
 
             function spin() {
-                // Check if hit the absolute debt limit
+                // Kontrola absolutniho limitu dluhu
                 if (currentBananas <= DEBT_LIMIT) {
-                    messageDisplay.textContent = "Debt limit reached! Win to pay it back.";
+                    messageDisplay.textContent = "Dosažen limit dluhu! Vyhraj na splacení.";
                     messageDisplay.className = "lose";
                     return;
                 }
 
-                // Apply interest if in debt
+                // Aplikace uroku v dluhu
                 let spinInterest = 0;
                 if (currentBananas < 0) {
                     spinInterest = INTEREST_PER_SPIN;
                     currentBananas -= spinInterest;
                 }
 
-                // Deduct normal cost
+                // Odecteni ceny za zatoceni
                 currentBananas -= spinCost;
                 updateDisplay(); 
                 
-                // Set UI state for spinning
+                // Nastaveni UI pro toceni
                 spinButton.disabled = true;
                 if (spinInterest > 0) {
-                    messageDisplay.textContent = `Spinning... (Interest paid: ${spinInterest}🍌)`;
+                    messageDisplay.textContent = `Točí se... (Úrok: ${spinInterest}🍌)`;
                 } else {
-                    messageDisplay.textContent = "Spinning...";
+                    messageDisplay.textContent = "Točí se...";
                 }
                 messageDisplay.className = "";
 
-                // Get final results before animation
+                // Ziskani vysledku pred animaci
                 const results = [
                     getRandomSymbol(),
                     getRandomSymbol(),
@@ -408,21 +408,21 @@
 
             function checkWin(r1, r2, r3) {
                 let payout = 0;
-                let winMessage = "Try again!";
+                let winMessage = "Zkus to znovu!";
                 messageDisplay.className = "lose";
 
                 if (r1 === r2 && r2 === r3) {
                     if (r1 === '🍌') {
                         payout = 100;
-                        winMessage = "🍌 JACKPOT! 🍌 +100 Bananas!";
+                        winMessage = "🍌 JACKPOT! 🍌 +100 Banánů!";
                     } else {
                         payout = 25;
-                        winMessage = `Three ${r1}s! +25 Bananas!`;
+                        winMessage = `Tři ${r1}! +25 Banánů!`;
                     }
                 }
                 else if ((r1 === '🍌' && r2 === '🍌') || (r1 === '🍌' && r3 === '🍌') || (r2 === '🍌' && r3 === '🍌')) {
                     payout = 10;
-                    winMessage = "Two Bananas! +10 Bananas!";
+                    winMessage = "Dva banány! +10 Banánů!";
                 }
 
                 currentBananas += payout; 
